@@ -38,6 +38,13 @@ The dataset (`Uncleaned_DS_jobs.csv`) contains job listings scraped from various
 ```python
 import pandas as pd
 df = pd.read_csv('Uncleaned_DS_jobs.csv')
+
+
+
+ ###  Step : Load Dataset
+
+
+
 df['Job Description'] = df['Job Description'].str.encode('utf-8', 'ignore').str.decode('utf-8', 'ignore')
 
 
