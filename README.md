@@ -1,94 +1,77 @@
 #  Data Science Job Listings – Data Cleaning & Preparation
 
-This project involves cleaning a dataset of job listings for data science roles. The dataset includes fields like job title, salary estimate, company name, rating, location, revenue, competitors, and more. The goal is to transform raw, messy data into a structured and analysis-ready format.
+This project focuses on cleaning and preparing a dataset of job listings for data science roles. The dataset was sourced from online job platforms and contains raw, unstructured information. My objective was to transform this messy data into a structured, analysis-ready format suitable for further exploration, modeling, and storytelling.
 
 ---
 
 ##  Dataset Overview
 
-The dataset (`Uncleaned_DS_jobs.csv`) contains job listings scraped from various online platforms. Some of the key columns include:
+The dataset (`Uncleaned_DS_jobs.csv`) includes various job attributes such as:
 
-- `Job Title`
-- `Salary Estimate`
-- `Company Name`
-- `Rating`
-- `Location`
-- `Size`
-- `Founded`
-- `Type of Ownership`
-- `Revenue`
-- `Competitors`
+- Job Title
+- Salary Estimate
+- Company Name and Rating
+- Job Description
+- Location
+- Headquarters
+- Company Size
+- Type of Ownership
+- Founded Year
+- Industry and Sector
+- Revenue
+- Competitors
 
----
-
-##  Tools Used
-
-- Python
-- Pandas
-- NumPy
-- Regular Expressions (Regex)
-- Jupyter Notebook / VS Code
+Many of these fields were messy, missing, or incorrectly formatted, and required extensive cleaning before analysis.
 
 ---
 
-##  Data Cleaning Workflow
+##  Project Goals
 
-###  Step 1: Load Dataset
+- Clean and standardize job-related fields (e.g., Job Title, Description)
+- Separate combined fields (e.g., Company Name with Rating)
+- Parse and convert salary estimates into numeric values
+- Handle missing values and placeholder values (e.g., `-1`)
+- Prepare the dataset for downstream tasks like EDA or modeling
 
-```python
-import pandas as pd
-df = pd.read_csv('Uncleaned_DS_jobs.csv')
+---
 
+##  Data Cleaning Workflow Summary
 
+###  Step 1: Load Dataset  
+Import the raw CSV into a pandas DataFrame for inspection and cleaning.
 
- ###  Step : Load Dataset
+---
 
+###  Step 2: Clean Job Descriptions and Extract Company Ratings  
+Remove unreadable characters from job descriptions and separate ratings embedded within company names into their own column.
 
+---
 
-df['Job Description'] = df['Job Description'].str.encode('utf-8', 'ignore').str.decode('utf-8', 'ignore')
+###  Step 3: Clean and Extract Salary Ranges  
+Strip out symbols and text from salary estimates, and split them into minimum, maximum, and average numeric salary fields.
 
+---
 
-# Backup original column
-df['Original Company Name'] = df['Company Name']
+### ✅ Step 4: Clean Revenue, Company Size, and Competitors  
+Standardize formats, remove extra text or placeholder values, and handle missing or null entries.
 
-# Extract name and rating
-extracted = df['Company Name'].str.extract(r'^(.*?)(?:\s*(\d\.\d))?$')
-df['Company Name'] = extracted[0].combine_first(df['Original Company Name'])
-df['Rating'] = extracted[1].astype(float)
+---
 
-# Drop helper column
-df.drop(columns=['Original Company Name'], inplace=True)
-# Remove parentheses text
-df['Salary Estimate'] = df['Salary Estimate'].str.replace(r'\(.*?\)', '', regex=True).str.strip()
+### Step 5: Apply Universal Cleaning to All Columns  
+Run a final cleaning pass across all columns to remove unwanted characters, whitespace, and standardize missing data.
 
-# Remove $ and K, then split
-df['Salary Estimate Clean'] = df['Salary Estimate'].str.replace('$', '', regex=False).str.replace('K', '', regex=False)
-df[['Min Salary', 'Max Salary']] = df['Salary Estimate Clean'].str.split('-', expand=True)
+---
 
-# Convert to integers
-df['Min Salary'] = df['Min Salary'].astype(float).astype(int)
-df['Max Salary'] = df['Max Salary'].astype(float).astype(int)
+##  Project Outcome
 
-# Optional: Add average salary
-df['Avg Salary'] = ((df['Min Salary'] + df['Max Salary']) / 2).astype(int)
-import numpy as np
+After the cleaning process, the dataset was transformed into a well-structured form, enabling:
 
-# Clean Revenue
-df['Revenue'] = df['Revenue'].astype(str).str.replace(r'\(.*?\)', '', regex=True).str.strip()
-df['Revenue'] = df['Revenue'].replace(['-1', ' -1', '-1.0', -1, -1.0], np.nan)
+- Exploratory Data Analysis (EDA)
+- Salary prediction modeling
+- Comparative analysis by company, location, or industry
+- Trend visualization across company size, ownership type, or rating
 
-# Clean Company Size
-df['Company Size'] = df['Company Size'].astype(str).str.replace('employees', '', regex=False).str.strip()
+---
 
-# Clean Competitors
-df['Competitors'] = df['Competitors'].astype(str).str.strip().replace(['-1', ' -1', '-1.0', -1], np.nan)
-def clean_dataframe(df):
-    for col in df.columns:
-        df[col] = df[col].astype(str).str.strip()
-        df[col] = df[col].str.replace(r'\(.*?\)', '', regex=True)
-        df[col] = df[col].replace(['-1', '-1.0', ' -1', '-1 ', ' -1.0 ', -1, -1.0], np.nan)
-        df[col] = df[col].replace('', np.nan)
-    return df
-
-df = clean_dataframe(df)
+## 📂 Repository Structure
 
