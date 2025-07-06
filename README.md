@@ -52,7 +52,7 @@ Strip out symbols and text from salary estimates, and split them into minimum, m
 
 ---
 
-### ✅ Step 4: Clean Revenue, Company Size, and Competitors  
+###  Step 4: Clean Revenue, Company Size, and Competitors  
 Standardize formats, remove extra text or placeholder values, and handle missing or null entries.
 
 ---
@@ -71,7 +71,5 @@ After the cleaning process, the dataset was transformed into a well-structured f
 - Comparative analysis by company, location, or industry
 - Trend visualization across company size, ownership type, or rating
 
----
 
-## 📂 Repository Structure
 
